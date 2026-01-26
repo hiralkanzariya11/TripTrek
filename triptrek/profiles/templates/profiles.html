@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile | TripTrek{% endblock %}
+
+{% block content %}
+<style>
+    .profile-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding-top: 50px;
+        min-height: calc(100vh - 80px);
+    }
+
+    .profile-card {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 40px 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 180, 200, 0.2);
+        width: 420px;
+        text-align: center;
+    }
+
+    h2 {
+        margin-bottom: 25px;
+        color: #0098A8;
+    }
+
+    .profile-photo {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 20px;
+        border: 3px solid #D0F0F6;
+    }
+
+    input[type=text], input[type=file], textarea {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 18px;
+        border-radius: 8px;
+        border: 1px solid #D0F0F6;
+        background-color: #FFFBE6;
+        color: #333;
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 80px;
+    }
+
+    button {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        background: #0098A8;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    button:hover {
+        background: #007C87;
+    }
+
+    .logout-link {
+        display: block;
+        margin-top: 18px;
+        font-size: 14px;
+        color: #0098A8;
+        text-decoration: none;
+    }
+
+    .logout-link:hover {
+        text-decoration: underline;
+    }
+
+    .message {
+        color: #FF6F3C;
+        margin-bottom: 10px;
+    }
+</style>
+
+<div class="profile-wrapper">
+    <div class="profile-card">
+        <h2>{{ request.user.username }}’s Profile</h2>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        {% if request.user.profile.photo %}
+            <img src="{{ request.user.profile.photo.url }}" class="profile-photo" alt="Profile Photo">
+        {% else %}
+            <img src="https://via.placeholder.com/120?text=Photo" class="profile-photo" alt="Profile">
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Update Profile</button>
+        </form>
+
+        <a href="{% url 'logout' %}" class="logout-link">Logout</a>
+    </div>
+</div>
+{% endblock %}

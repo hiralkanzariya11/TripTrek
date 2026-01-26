@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}TripTrek{% endblock %}</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #D0F0F6, #FFFBE6);
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 40px;
+            background: rgba(255, 255, 255, 0.85);
+            box-shadow: 0 4px 15px rgba(0, 180, 200, 0.2);
+        }
+
+        .navbar .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: #0098A8;
+            text-decoration: none;
+        }
+
+        .nav-links a {
+            margin-left: 20px;
+            text-decoration: none;
+            color: #0098A8;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+
+        .username {
+            margin-left: 20px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .logout {
+            margin-left: 15px;
+            color: #FF6F3C;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .logout:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <!-- LOGO → HOME -->
+        <a href="{% url 'home' %}" class="logo">TripTrek</a>
+
+        <div class="nav-links">
+            <!-- HOME ALWAYS VISIBLE -->
+            <a href="{% url 'home' %}">Home</a>
+
+            {% if user.is_authenticated %}
+                <!-- AUTHENTICATED USER -->
+                <a href="{% url 'profiles' %}">Dashboard</a>
+                <span class="username">Hello, {{ user.username }}</span>
+                <a href="{% url 'logout' %}" class="logout">Logout</a>
+            {% else %}
+                <!-- GUEST USER -->
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'register' %}">Sign Up</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    {% block content %}{% endblock %}
+
+</body>
+</html>

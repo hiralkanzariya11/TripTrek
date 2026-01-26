@@ -1,0 +1,10 @@
+<h2>{{ request.user.username }}'s Profile</h2>
+<h3>Your Bookings</h3>
+<ul>
+    {% for booking in bookings %}
+        <li>{{ booking.trip.title }} - {{ booking.status }} - {{ booking.booking_date }}</li>
+    {% empty %}
+        <li>You have no bookings yet.</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'logout' %}">Logout</a>
