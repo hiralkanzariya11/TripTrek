@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Trip | TripTrek{% endblock %}
+
+{% block content %}
+<div style="display:flex; justify-content:center; padding-top:50px;">
+    <div style="background: rgba(255,255,255,0.95); padding:30px; border-radius:15px; width:400px; text-align:center; box-shadow:0 6px 20px rgba(0,180,200,0.2);">
+        <h2>Delete Trip</h2>
+        <p>Are you sure you want to delete <strong>{{ trip.title }}</strong>?</p>
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" style="background:#FF6F3C; color:#fff; padding:10px 20px; border:none; border-radius:8px;">Yes, Delete</button>
+            <a href="{% url 'trip_list' %}" style="margin-left:10px; color:#0098A8; text-decoration:none;">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

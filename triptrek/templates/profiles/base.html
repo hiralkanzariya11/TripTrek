@@ -12,6 +12,53 @@
             min-height: 100vh;
         }
 
+        .dropdown {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+    }
+
+    /* Dropdown content (hidden by default) */
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        background-color: rgba(255, 255, 255, 0.95);
+        min-width: 150px;
+        box-shadow: 0 4px 10px rgba(0, 180, 200, 0.2);
+        border-radius: 6px;
+        z-index: 100;
+    }
+
+    /* Links inside the dropdown */
+    .dropdown-content a {
+        color: #0098A8;
+        padding: 10px 15px;
+        text-decoration: none;
+        display: block;
+        font-weight: 500;
+    }
+
+    .dropdown-content a.logout {
+        color: #FF6F3C;
+    }
+
+    /* Hover effect for dropdown links */
+    .dropdown-content a:hover {
+        background-color: rgba(0, 152, 168, 0.1);
+    }
+
+    /* Show the dropdown on hover */
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    /* Optional: small arrow next to username */
+    .username::after {
+        content: " ";
+        margin-left: 5px;
+    }
+
         /* Navbar */
         .navbar {
             display: flex;
@@ -70,9 +117,17 @@
 
             {% if user.is_authenticated %}
                 <!-- AUTHENTICATED USER -->
-                <a href="{% url 'profiles' %}">Dashboard</a>
+                 <div class="dropdown">
+                <span class="username">Hello, {{ user.username }} ▼</span>
+                <div class="dropdown-content">
+                    <a href="{% url 'profiles' %}">Profile</a>
+                    <a href="{% url 'trip_list' %}">Trips</a>
+                    <a href="{% url 'logout' %}" class="logout">Logout</a>
+                </div>
+            </div>
+                <!-- <a href="{% url 'profiles' %}">Dashboard</a>
                 <span class="username">Hello, {{ user.username }}</span>
-                <a href="{% url 'logout' %}" class="logout">Logout</a>
+                <a href="{% url 'logout' %}" class="logout">Logout</a> -->
             {% else %}
                 <!-- GUEST USER -->
                 <a href="{% url 'login' %}">Login</a>
@@ -80,6 +135,8 @@
             {% endif %}
         </div>
     </nav>
+
+    
 
     {% block content %}{% endblock %}
 

@@ -79,6 +79,10 @@
     }
 </style>
 
+<section>
+    
+
+
 <section class="hero">
     <h1>Explore the World with TripTrek</h1>
     <p>
@@ -94,6 +98,20 @@
             <a href="{% url 'login' %}" class="btn-secondary">Login</a>
         {% endif %}
     </div>
+</section>
+
+{% for trip in trips %}
+    <div style="background:#fff;padding:20px;margin-bottom:20px;border-radius:10px;">
+        <h3>{{ trip.title }}</h3>
+        <p><b>Location:</b> {{ trip.location }}</p>
+        <p><b>Price:</b> ₹{{ trip.price }}</p>
+        <p>{{ trip.description }}</p>
+
+        {% if trip.image %}
+            <img src="{{ trip.image.url }}" width="250">
+        {% endif %}
+    </div>
+{% endfor %}
 </section>
 
 <section class="features">

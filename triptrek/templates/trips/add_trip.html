@@ -1,0 +1,12 @@
+{% extends 'profiles/base.html' %}
+{% block title %}Add Trip{% endblock %}
+
+{% block content %}
+<h2>Add New Trip</h2>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save Trip</button>
+</form>
+{% endblock %}

@@ -14,7 +14,7 @@ def register(request):
             return redirect('profiles')
     else:
         form = UserRegisterForm()
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'profiles/register.html', {'form': form})
 
 def user_login(request):
     if request.method == 'POST':
@@ -26,7 +26,7 @@ def user_login(request):
             return redirect('profiles')
         else:
             messages.error(request, 'Invalid username or password')
-    return render(request, 'login.html')
+    return render(request, 'profiles/login.html')
 
 @login_required
 def user_logout(request):
@@ -43,12 +43,12 @@ def profiles_view(request):
             return redirect('profiles')
     else:
         form = ProfilesUpdateForm(instance=request.user.profiles)
-    return render(request, 'profiles.html', {'form': form})
+    return render(request, 'profiles/profiles.html', {'form': form})
 
 
 def home_view(request):
-    return render(request, 'home.html')
+    return render(request, 'profiles/home.html')
 
 
 def about_view(request):
-    return render(request, 'about.html')
+    return render(request, 'profiles/about.html')

@@ -94,11 +94,16 @@
             {% endfor %}
         {% endif %}
 
-        {% if request.user.profile.photo %}
-            <img src="{{ request.user.profile.photo.url }}" class="profile-photo" alt="Profile Photo">
+
+        {% if request.user.profiles.photo %}
+            <img src="{{ request.user.profiles.photo.url }}" class="profile-photo" alt="Profile Photo">
+ 
         {% else %}
             <img src="https://via.placeholder.com/120?text=Photo" class="profile-photo" alt="Profile">
         {% endif %}
+
+
+        
 
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
@@ -110,3 +115,6 @@
     </div>
 </div>
 {% endblock %}
+ 
+
+<!-- <img src="{{ request.user.profiles.photo.url }}" class="profile-photo">where i put this line  -->
