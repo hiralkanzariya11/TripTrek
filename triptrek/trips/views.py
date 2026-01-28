@@ -29,6 +29,7 @@ def add_trip(request):
         form = TripForm()
     return render(request, 'trips/add_trip.html', {'form': form})
 
+
 @login_required(login_url='login')
 def edit_trip(request, trip_id):
     trip = get_object_or_404(Trip, id=trip_id)
