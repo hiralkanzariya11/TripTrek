@@ -1,9 +1,12 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import TripForm
-from .models import Trip
+from .models import Trip, TripImage
 from django.db.models import Q
 
+# =========================
+# Trip List / Search View
+# =========================
 def trip_list(request):
     query = request.GET.get('q')  # single search input
     if query:
@@ -18,30 +21,58 @@ def trip_list(request):
     context = {'trips': trips, 'query': query}
     return render(request, 'trips/trip_list.html', context)
 
+
+# =========================
+# Add Trip View
+# =========================
 @login_required(login_url='login')
 def add_trip(request):
     if request.method == 'POST':
         form = TripForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            return redirect('trip_list')
+            trip = form.save()
+
+            # Save multiple gallery images properly
+            images = request.FILES.getlist('images')
+            if images:
+                for img in images:
+                    TripImage.objects.create(trip=trip, image=img)
+
+            return redirect('trip_list')  # redirect to trips list
     else:
         form = TripForm()
+
     return render(request, 'trips/add_trip.html', {'form': form})
 
 
+# =========================
+# Edit Trip View
+# =========================
 @login_required(login_url='login')
 def edit_trip(request, trip_id):
     trip = get_object_or_404(Trip, id=trip_id)
+
     if request.method == 'POST':
         form = TripForm(request.POST, request.FILES, instance=trip)
         if form.is_valid():
-            form.save()
+            trip = form.save()
+
+            # Add any new gallery images uploaded
+            images = request.FILES.getlist('images')
+            if images:
+                for img in images:
+                    TripImage.objects.create(trip=trip, image=img)
+
             return redirect('trip_list')
     else:
         form = TripForm(instance=trip)
+
     return render(request, 'trips/add_trip.html', {'form': form, 'edit': True})
 
+
+# =========================
+# Delete Trip View
+# =========================
 @login_required(login_url='login')
 def delete_trip(request, trip_id):
     trip = get_object_or_404(Trip, id=trip_id)

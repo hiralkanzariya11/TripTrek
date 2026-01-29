@@ -12,5 +12,5 @@ class TripForm(forms.ModelForm):
             'start_date',
             'end_date',
             'available_slots',
-            'image',
+            'cover_image'
         ]

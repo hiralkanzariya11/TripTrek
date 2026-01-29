@@ -8,10 +8,17 @@ class Trip(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     available_slots = models.PositiveIntegerField()
-    image = models.ImageField(upload_to='trip_images/', blank=True, null=True)
+    cover_image = models.ImageField(upload_to='trip_images/cover/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
 
 
+class TripImage(models.Model):
+    trip = models.ForeignKey(Trip, related_name='images', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='trip_images/gallery/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Image for {self.trip.title}"
