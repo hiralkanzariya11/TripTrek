@@ -1,222 +1,28 @@
 {% extends 'profiles/base.html' %}
-
-{% block title %}Trips | TripTrek{% endblock %}
+{% load static %}
 
 {% block content %}
-<style>
-/* Search bar */
-.search-container {
-    text-align: center;
-    padding: 20px 40px;
-}
-.search-container input[type=text] {
-    padding: 10px 15px;
-    width: 50%;
-    max-width: 400px;
-    border-radius: 8px;
-    border: 1px solid #D0F0F6;
-    outline: none;
-}
-.search-container button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    background: #0098A8;
-    color: #fff;
-    cursor: pointer;
-    margin-left: 10px;
-}
-.search-container button:hover { background: #007C87; }
+<h2>All Trips</h2>
 
-/* Grid layout */
-.trips-grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-    padding: 20px 40px;
-}
+<a href="{% url 'add_trip' %}">Add New Trip</a>
 
-/* Card */
-.trip-card {
-    width: 30%;
-    min-width: 280px;
-    border-radius: 15px;
-    overflow: hidden;
-    position: relative;
-    box-shadow: 0 10px 25px rgba(0,180,200,0.2);
-}
-.trip-card img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-}
-
-/* Details button */
-.details-btn {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    background: #0098A8;
-    color: #fff;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-}
-.details-btn:hover { background: #007C87; }
-
-/* Modal */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 999;
-    left:0; top:0;
-    width:100%; height:100%;
-    background: rgba(0,0,0,0.7);
-    justify-content: center;
-    align-items: center;
-}
-.modal-content {
-    background: #fff;
-    padding: 20px;
-    width: 80%;
-    max-width: 800px;
-    border-radius: 10px;
-    position: relative;
-}
-.modal-close {
-    position: absolute;
-    top:10px; right:10px;
-    font-size: 24px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-/* Modal slider */
-.modal-slider {
-    position: relative;
-    width: 100%;
-    height: 400px;
-    overflow: hidden;
-    margin-bottom: 15px;
-}
-.modal-slide {
-    position: absolute;
-    width:100%;
-    height:100%;
-    opacity:0;
-    transition: opacity 0.5s;
-}
-.modal-slide.active { opacity:1; }
-.modal-slide img { width:100%; height:100%; object-fit: cover; }
-.modal-arrow {
-    position: absolute;
-    top:50%;
-    transform: translateY(-50%);
-    font-size:28px;
-    font-weight:bold;
-    color: rgba(255,255,255,0.8);
-    padding: 5px 10px;
-    background: rgba(0,0,0,0.3);
-    border-radius: 50%;
-    cursor: pointer;
-}
-.modal-arrow.left { left:10px; }
-.modal-arrow.right { right:10px; }
-</style>
-
-<!-- Search -->
-<div class="search-container">
-    <form method="GET">
-        <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Search trips">
-        <button type="submit">Search</button>
-    </form>
-</div>
-
-<!-- Trip Cards -->
-<div class="trips-grid">
-{% for trip in trips %}
-<div class="trip-card">
-    {% if trip.cover_image %}
-        <img src="{{ trip.cover_image.url }}" alt="{{ trip.title }}">
-    {% elif trip.images.first %}
-        <img src="{{ trip.images.first.image.url }}" alt="{{ trip.title }}">
-    {% else %}
-        <img src="https://via.placeholder.com/300x180?text=No+Image">
-    {% endif %}
-    <button class="details-btn" data-modal="modal-{{ trip.id }}">Details</button>
-</div>
-
-<!-- Modal -->
-<div id="modal-{{ trip.id }}" class="modal">
-    <div class="modal-content">
-        <span class="modal-close">&times;</span>
-
-        <!-- Slider -->
-        <div class="modal-slider" data-slider>
-            {% if trip.cover_image %}
-            <div class="modal-slide active">
-                <img src="{{ trip.cover_image.url }}" alt="{{ trip.title }}">
-            </div>
+<div style="display:flex; flex-wrap:wrap; gap:20px; margin-top:20px;">
+    {% for trip in trips %}
+        <div style="border:1px solid #ccc; padding:10px; width:300px;">
+            <h3>{{ trip.title }}</h3>
+            <p><strong>Location:</strong> {{ trip.location }}</p>
+            <p><strong>Price:</strong> ${{ trip.price }}</p>
+            {% if trip.images.all %}
+                <img src="{{ trip.images.all.0.image.url }}" width="100%" alt="{{ trip.title }}">
             {% endif %}
-            {% for img in trip.images.all %}
-            <div class="modal-slide {% if not trip.cover_image and forloop.first %}active{% endif %}">
-                <img src="{{ img.image.url }}" alt="{{ trip.title }}">
-            </div>
-            {% empty %}
-            <div class="modal-slide active">
-                <img src="https://via.placeholder.com/300x180?text=No+Image">
-            </div>
-            {% endfor %}
-            <div class="modal-arrow left">&#10094;</div>
-            <div class="modal-arrow right">&#10095;</div>
+            <p>
+                <a href="{% url 'edit_trip' trip.id %}">Edit</a> |
+                <a href="{% url 'delete_trip' trip.id %}">Delete</a>
+            </p>
         </div>
-
-        <!-- Trip details -->
-        <h3>{{ trip.title }}</h3>
-        <p><strong>Location:</strong> {{ trip.location }}</p>
-        <p><strong>Price:</strong> ${{ trip.price }}</p>
-        <p><strong>Dates:</strong> {{ trip.start_date }} → {{ trip.end_date }}</p>
-    </div>
+    {% empty %}
+        <p>No trips added yet.</p>
+    {% endfor %}
 </div>
-
-{% empty %}
-<p style="width:100%; text-align:center;">No trips found.</p>
-{% endfor %}
-</div>
-
-{% if user.is_authenticated %}
-<a href="{% url 'add_trip' %}" class="add-trip-btn">+</a>
-{% endif %}
-
-<script>
-// Open/close modal
-document.querySelectorAll('.details-btn').forEach(btn => {
-    const modalId = btn.dataset.modal;
-    const modal = document.getElementById(modalId);
-    const close = modal.querySelector('.modal-close');
-
-    btn.onclick = () => { modal.style.display='flex'; };
-    close.onclick = () => { modal.style.display='none'; };
-    window.onclick = (e) => { if(e.target==modal) modal.style.display='none'; };
-
-    // Slider inside modal
-    const slides = modal.querySelectorAll('.modal-slide');
-    const left = modal.querySelector('.modal-arrow.left');
-    const right = modal.querySelector('.modal-arrow.right');
-    let index = 0;
-
-    if(slides.length>1){
-        left.onclick = () => show((index-1+slides.length)%slides.length);
-        right.onclick = () => show((index+1)%slides.length);
-        function show(i){
-            slides[index].classList.remove('active');
-            index = i;
-            slides[index].classList.add('active');
-        }
-    }
-});
-</script>
 
 {% endblock %}
